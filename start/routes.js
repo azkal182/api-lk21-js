@@ -23,3 +23,8 @@ Route.group(() => {
   Route.get('/search', 'Movie/Lk21Controller.search')
   Route.get('/show', 'Movie/Lk21Controller.showData')
 }).prefix('api/movie/lk21');
+
+Route.group(() => {
+  Route.get('/fembed', 'BypasserController.fembed')
+
+}).prefix('api/bypass');

@@ -113,58 +113,40 @@ class Lk21Controller {
   async showData({
     request, response
   }) {
-    let cookie = new Cookie()
     let query = request.input('id')
-    Logger.info('from show' + query)
-    let found = cookie.getCookie(query)
-    const result = found.then(e => {
-      console.log(e)
-
-      let result = axios({
-        method: 'post',
-        url: "https://dl.indexmovies.xyz/verifying.php",
-        data: {
-          slug: query
-        },
-        headers: {
-          'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
-          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Accept-Encoding': 'application/json',
-          'cookie': e
-        }
-      }).then((res) => {
-        let data = res.data
-        const $ = cheerio.load(data)
-        let list = $("tbody > tr");
-        //console.log(res)
-        let index = []
-        list.each(function(v, i) {
-          let item = $(this).find("strong").text()
-
-          let link = $(this).find("a").attr('href')
-          let quality = $(this).find("a").attr('class').substring(9, 13)
-
-          //console.log(quality)
-
-          index.push({
-            item, link, quality
-          })
-        });
-
-        console.log(index)
-        return {
-          message: 'success', results: {
-            index
-          }}
-      })
-      //console.log(result)
-      return result
+    const cookie = await this.getCookie(query)
+    let result = await axios({
+      method: 'post',
+      url: "https://dl.indexmovies.xyz/verifying.php",
+      data: {
+        slug: query
+      },
+      headers: {
+        'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept-Encoding': 'application/json',
+        'cookie': cookie
+      }
+    }).then((res) => {
+      let data = res.data
+      const $ = cheerio.load(data)
+      let list = $("tbody > tr");
+      let index = []
+      list.each(function(v, i) {
+        let item = $(this).find("strong").text()
+        let link = $(this).find("a").attr('href')
+        let quality = $(this).find("a").attr('class').substring(9, 13)
+        index.push({
+          item, link, quality
+        })
+      });
+      return {
+        message: 'success', results:
+        index
+      }
     })
+    //console.log(result)
     return result
-
-
-
-    //return found
   }
 
   async getCookie(id) {
@@ -191,7 +173,7 @@ class Lk21Controller {
       let idx = data.indexOf(search)
       let hasil = data.substring(idx + 23, idx + 63)
       console.log('')
-      Logger.warning(data)
+      //Logger.warning(data)
       return "validate=" + hasil
     });
     return result
@@ -202,37 +184,6 @@ class Lk21Controller {
 
 
 
-}
-
-class Cookie {
-  async getCookie(id) {
-    Logger.info('from cookie')
-    console.log('2')
-
-    const config = {
-
-      headers: {
-
-        'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
-
-        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-
-        'Accept-Encoding': 'application/json'
-
-      }
-
-    };
-
-    let result = axios.get("https://dl.indexmovies.xyz/get/" + id, config).then((res) => {
-      let data = res.data
-      const search = "setCookie('validate'"
-      let idx = data.indexOf(search)
-      let hasil = data.substring(idx + 23, idx + 63)
-      //console.log(data)
-      return "validate=" + hasil
-    });
-    return result
-  }
 }
 
 module.exports = Lk21Controller
