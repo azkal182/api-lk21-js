@@ -266,7 +266,7 @@ class AnibatchController {
 
     });
 
-    return resut
+    return result
   }
 }
 
