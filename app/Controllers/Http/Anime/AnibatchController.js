@@ -163,11 +163,13 @@ class AnibatchController {
           //console.log(final_rgx)
           if (final_rgx == null) {
             //const regex = /^(.*?[\\~])/gmi
+
+            const regex = /^([^~]+)/gm
             eps = h4.match(regex)[0]
             // old method
             // const regex = /^([^~]+)/gm
             // new method
-            const regex = /^([^~]+)/gm
+
 
             // console.log(eps)
           }
