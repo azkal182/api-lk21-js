@@ -136,47 +136,62 @@ class AnibatchController {
 
         if ($(this).prev('h4') != "") {
           let h4 = $(this).prev('h4').text()
+          console.log('from h4 ')
+          console.log(h4)
           const regex = /(?<=episode\s)[0-9]+/gmi
           // \d[^episode]
           let final_rgx = h4.match(regex)
           //console.log(final_rgx)
           if (final_rgx == null) {
             //const regex = /^(.*?[\\~])/gmi
-            //eps = h4.match(regex)[0]
+            eps = h4.match(regex)[0]
             const regex = /^([^~]+)/gm
 
             eps = h4.match(regex)[0]
             //console.log(h4.match(regex)[0])
-          } else if (final_rgx) {
-            //console.log(final_rgx[0])
+          } 
+          else if (final_rgx) {
+            console.log(final_rgx[0])
             eps = final_rgx[0]
-          } else {
-            //console.log('tes')
+          } 
+          else {
+            console.log('regex not match')
           }
-          //epp.push({title: 'hh'})
-          //console.log(epp.length)
-          //console.log('from h4 ' + eps)
+        //   //epp.push({title: 'hh'})
+        //   //console.log(epp.length)
+        //   //console.log('from h4 ' + eps)
         } else if ($(this).prev('table') != "") {
           let table = $(this).prev('table').find('b').html()
+          // console.log(table)
+          if (table == null) {
+            return
+            
+          } else  {
+
+          
 
           const regex = /(?<=episode\s)[0-9]+/gmi
           let final_rgx = table.match(regex)
-          if (final_rgx == null) {
-            //const regex = /^(.*?[\\~])/gmi
-            const regex = /^([^~]+)/gm
 
-            // console.log(table.match(regex)[0])
+          if (final_rgx == null) {
+        //     //const regex = /^(.*?[\\~])/gmi
+        //     //const regex = /^([^~]+)/gm
+
+        //     // console.log(table.match(regex)[0])
             eps = table.match(regex)[0]
           } else if (final_rgx) {
             eps = final_rgx[0]
-            //console.log(final_rgx[0])
+            
+        //     //console.log(eps)
+        //     //console.log(final_rgx[0])
 
           } else {
-            console.log('tes')
+            console.log('regex not match')
           }
 
-          //console.log('from table ' + eps)
-        }
+        //   //console.log('from table ' + eps)
+          }
+         }
         let d = {}
         let resol = {}
         let dobj = []
@@ -240,9 +255,10 @@ class AnibatchController {
         ...meta,
         ...result
       };
-      console.log(JSON.stringify(mergedObject,
-        null,
-        1))
+
+      // console.log(JSON.stringify(mergedObject,
+      //   null,
+      //   1))
 
       return mergedObject
       //console.log(mergedObject)
