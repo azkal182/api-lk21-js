@@ -18,11 +18,19 @@ const Route = use('Route')
 
 Route.on('/').render('welcome')
 
+
+
 Route.group(() => {
   Route.get('/latest', 'Movie/Lk21Controller.latest')
   Route.get('/search', 'Movie/Lk21Controller.search')
   Route.get('/show', 'Movie/Lk21Controller.showData')
 }).prefix('api/movie/lk21');
+
+Route.group(() => {
+  Route.get('/search', 'Anime/AnibatchController.search')
+  Route.get('show', 'Anime/AnibatchController.show')
+
+}).prefix('api/anime/anibatch');
 
 Route.group(() => {
   Route.get('/fembed', 'BypasserController.fembed')
