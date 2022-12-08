@@ -10,6 +10,8 @@ class BypasserController {
   async fembed({
     request, response
   }) {
+    const ip = request.ip()
+    Logger.warning(ip)
     let query = request.input('url')
     const config = {
       headers: {
@@ -60,7 +62,7 @@ class BypasserController {
     })
     //Logger.info(link)
     let final_link = []
-    
+
 
     let result = await link.reduce((accumulatorPromise, nextID, i) => {
       return accumulatorPromise.then(() => {
