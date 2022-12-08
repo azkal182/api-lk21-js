@@ -149,13 +149,24 @@ class AnibatchController {
           let h4 = $(this).prev('h4').text()
           // console.log('from h4 ')
           // console.log(h4)
-          const regex = /(?<=episode\s)[0-9]+/gmi
+          // old regex
+          // const regex = /(?<=episode\s)[0-9]+/gmi
+
+          // new regex
+          const regex = /(?<=episode\s)[0-9-1-9]+|(?<=episode\s)[0-9]+/gmi
+
+
+
+
           // \d[^episode]
           let final_rgx = h4.match(regex)
           //console.log(final_rgx)
           if (final_rgx == null) {
             //const regex = /^(.*?[\\~])/gmi
             eps = h4.match(regex)[0]
+            // old method
+            // const regex = /^([^~]+)/gm
+            // new method
             const regex = /^([^~]+)/gm
 
             // console.log(eps)
@@ -178,8 +189,12 @@ class AnibatchController {
           else {
 
 
+            // old  method
+            // const regex = /(?<=episode\s)[0-9]+/gmi
+            // new  method
+            const regex = /(?<=episode\s)[0-9-1-9]+|(?<=episode\s)[0-9]+/gmi
 
-            const regex = /(?<=episode\s)[0-9]+/gmi
+
             let final_rgx = table.match(regex)
             // console.log(final_rgx)
 
