@@ -2,7 +2,11 @@
 const Logger = use('Logger')
 const axios = require('axios');
 const cheerio = require('cheerio');
-const host = "https://anibatch.anibatch.moe/"
+const Env = use('Env')
+
+
+
+const host = Env.get("HOST_ANIBATCH", "https://anibatch.anibatch.moe/")
 
 class AnibatchController {
   async search({
@@ -37,12 +41,14 @@ class AnibatchController {
           //size_thumb.push(newData)
           size_thumb.push(v.trim().split(' ')[0])
         })
+        let id = link.match(/(http[s]?:\/\/)?([^\/\s]+\/)(.*)/)[3].replace(/\/+$/, '');
+        //Logger.info()
 
 
         // console.log(JSON.newData))
         //const ratting = $(this).find(".postedon").text()
         index.push({
-          title, link, thumb
+          title, id, link, thumb, size_thumb
 
 
         })
@@ -56,7 +62,7 @@ class AnibatchController {
       }
     });
 
-    console.log(result)
+    // console.log(result)
     return result
   }
 
@@ -260,7 +266,7 @@ class AnibatchController {
 
     });
 
-    return result
+    return resu
   }
 }
 

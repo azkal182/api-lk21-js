@@ -1,9 +1,10 @@
 'use strict'
 const Logger = use('Logger')
+const Env = use('Env')
 
 const axios = require('axios');
 const cheerio = require('cheerio');
-const url = "https://lk21official.info/";
+const url = Env.get('HOST_LK21', 'https://lk21official.info/')
 //axios.defaults.headers.common['accept-encoding'] = '';
 axios.defaults.headers.common['user-agent'] = 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36';
 //const url = "https://dl.indexmovies.xyz/get/";
