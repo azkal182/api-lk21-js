@@ -24,6 +24,8 @@ Route.group(() => {
   Route.get('/latest', 'Movie/Lk21Controller.latest')
   Route.get('/search', 'Movie/Lk21Controller.search')
   Route.get('/show', 'Movie/Lk21Controller.showData')
+  Route.get('/popular', 'Movie/Lk21Controller.popular')
+  Route.get('/test', 'Movie/Lk21Controller.test')
 }).prefix('api/movie/lk21');
 
 Route.group(() => {
