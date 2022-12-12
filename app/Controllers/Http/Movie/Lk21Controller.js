@@ -151,6 +151,7 @@ class Lk21Controller {
       data.uploaded = get_meta.find('div:nth-child(11) > h3').text()
       data.duration = get_meta.find('div:nth-child(12) > h3').text()
       data.overview = get_meta.find('blockquote').html().match(/<br>(.*?)<br>/m)[1].trim()
+      data.trailer = $('#player-default > div > div.action-player > ul > li:nth-child(3) > a').attr('href')
 
       // this for find server embed
       let list = $('section').find('ul#loadProviders')
@@ -392,6 +393,8 @@ class Lk21Controller {
       data.uploaded = get_meta.find('div:nth-child(11) > h3').text()
       data.duration = get_meta.find('div:nth-child(12) > h3').text()
       data.overview = get_meta.find('blockquote').html().match(/<br>(.*?)<br>/m)[1].trim()
+      data.trailer = $('#player-default > div > div.action-player > ul > li:nth-child(3) > a').attr('href')
+
 
 
       // console.log(data)
