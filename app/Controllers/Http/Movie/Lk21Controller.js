@@ -12,7 +12,7 @@ axios.defaults.headers.common['user-agent'] = 'Mozilla/5.0 (Linux; Android 12; C
 //const url = "https://dl.indexmovies.xyz/get/";
 
 class Lk21Controller {
-  async latest({
+  async latestOld({
     request, response
   }) {
     const config = {
@@ -296,7 +296,7 @@ class Lk21Controller {
 
 
 
-  async popular({
+  async latest({
     request, response
   }) {
     const config = {
@@ -312,9 +312,11 @@ class Lk21Controller {
     }
 
 
-    let result = await axios.get(url + 'populer', config).then((res) => {
+    let result = await axios.get(url + 'latest', config).then((res) => {
       let html = res.data
       let $ = cheerio.load(html)
+
+      // console.log($('#pagination > span').html().match(/(\d+)(?!.*\d)/m)[0gi ])
 
       const item = $('#grid-wrapper > div')
       let index = []
@@ -346,6 +348,59 @@ class Lk21Controller {
     return result
   }
 
+
+
+  async popular({
+    request, response
+  }) {
+    const config = {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept-Encoding': 'application/json'
+      }
+    };
+
+    function getId(href) {
+      var match = href.match(/^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)([\/]{0,1}[^?#]*)(\?[^#]*|)(#.*|)$/);
+      return match[5].split('/').join('');
+    }
+
+
+    let result = await axios.get(url + 'populer', config).then((res) => {
+      let html = res.data
+      let $ = cheerio.load(html)
+
+      // console.log($('#pagination > span').html().match(/(\d+)(?!.*\d)/m)[0gi ])
+
+      const item = $('#grid-wrapper > div')
+      let index = []
+      item.each(function (i, v) {
+        let title = $(this).find('figure > a > img').attr('alt')
+        let poster = 'https:' + $(this).find('figure > a > img').attr('src')
+        let id = $(this).find('figure > a').attr('href')
+        let rating = $(this).find('.rating').text()
+        let quality = $(this).find('.quality').text()
+        index.push({
+          title,
+          poster,
+          id: getId(id),
+          rating,
+          quality
+        })
+
+      })
+
+      return {
+        message: 'success',
+        length: index.length,
+        results: {
+          data: index
+        }
+      }
+    })
+
+    return result
+  }
 
 
 
