@@ -89,6 +89,17 @@ class Lk21Controller {
         let img = "https:" + $(this).find('figure > a > img').attr('src')
         let id = getId($(this).find("figure > a").attr("href"))
         let link = $(this).find(".search-content > h2 > a").attr('href');
+        let tag = $(this).find('p.cat-links > a:nth-child(1)').attr('href')
+        if (!tag.match(/series/gm))
+        {
+        index.push({
+          title,
+          img,
+          id: id,
+          link
+        })
+        } 
+        /*
         index.push({
           title,
           img,
@@ -96,6 +107,7 @@ class Lk21Controller {
           link
 
         })
+        */
 
       })
       return {
