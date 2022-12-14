@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="https://cdn.plyr.io/3.4.6/plyr.css" rel="stylesheet" />
+    <style>
+      .container {
+        margin-top: 50%;
+      }
+      body {
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <video controls crossorigin playsinline poster="" id="player">
+        <!-- Video files -->
+        @each((data, index) in data)
+    
+        <source
+          src="{{data.file}}"
+          type="video/mp4"
+          size="{{data.label}}"
+        />
+@endeach
+
+        <!-- Fallback for browsers that don't support the <video> element -->
+      </video>
+    </div>
+
+    <script src="https://cdn.plyr.io/3.4.6/plyr.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // This is the bare minimum JavaScript. You can opt to pass no arguments to setup.
+        const player = new Plyr("#player");
+
+        // Expose
+        window.player = player;
+
+        // Bind event listener
+        function on(selector, type, callback) {
+          document
+            .querySelector(selector)
+            .addEventListener(type, callback, false);
+        }
+      });
+    </script>
+  </body>
+</html>
