@@ -69,7 +69,16 @@ module.exports = {
   |
   */
   //changed
-  exposeHeaders: true,
+ // exposeHeaders: true,
+  exposeHeaders: [
+    'cache-control',
+    'content-language',
+    'content-type',
+    'expires',
+    'last-modified',
+    'pragma',
+    'Access-Control-Allow-Origin'
+  ],
 
   /*
   |--------------------------------------------------------------------------
