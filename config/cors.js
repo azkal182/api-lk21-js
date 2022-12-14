@@ -16,7 +16,9 @@ module.exports = {
   | Function - Receives the current origin and should return one of the above values.
   |
   */
-  origin: false,
+
+  // change to true
+  origin: true,
 
   /*
   |--------------------------------------------------------------------------
@@ -29,7 +31,11 @@ module.exports = {
   | Array - An array of allowed methods
   |
   */
-  methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  methods: ['GET',
+    'PUT',
+    'PATCH',
+    'POST',
+    'DELETE'],
 
   /*
   |--------------------------------------------------------------------------
@@ -62,7 +68,8 @@ module.exports = {
   | Array - An array of allowed headers
   |
   */
-  exposeHeaders: false,
+  //changed
+  exposeHeaders: true,
 
   /*
   |--------------------------------------------------------------------------
