@@ -42,7 +42,7 @@ Route.get('/fembed', async ({
 
   let lk21 = new Lk21()
   let data = await lk21.showData(request.input('url'))
-  // console.log(data)
+  console.log(data)
 
   let final = data[data.length -1]['file']
 
@@ -75,6 +75,15 @@ Route.group(() => {
   Route.get('show', 'Anime/AnibatchController.show')
 
 }).prefix('api/anime/anibatch');
+
+Route.group(() => {
+  Route.get('/search', 'Anime/OploverzController.search')
+  Route.get('/detail', 'Anime/OploverzController.detail')
+  Route.get('/download', 'Anime/OploverzController.download')
+
+
+}).prefix('api/anime/oploverz');
+
 
 Route.group(() => {
   Route.get('/fembed', 'BypasserController.fembed')
