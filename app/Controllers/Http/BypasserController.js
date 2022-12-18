@@ -89,7 +89,30 @@ class BypasserController {
 
   }
 
+  async zippyshare({
+    request, response
+  }) {
 
+    let url = request.input('url')
+    const result = await axios(url).then((res) => {
+      const html = res.data
+      const $ = cheerio.load(html)
+
+
+      const dlbutton = $("body").text().match(/href = "([^"]+)" \+ \(([^)]+)\) \+ "([^"]+)/);
+
+      const folder = dlbutton[1]
+
+      const filename = dlbutton[3]
+      const mathChall = eval(dlbutton[2])
+      // console.log(`${url.match(/https?:\/\/[^/]+/)[0]}${folder}${mathChall}${filename}`)
+
+      return `${url.match(/https?:\/\/[^/]+/)[0]}${folder}${mathChall}${filename}`
+
+    })
+    return {link: result}
+  }
 }
+
 
 module.exports = BypasserController

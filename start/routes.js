@@ -87,5 +87,6 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('/fembed', 'BypasserController.fembed')
+  Route.get('/zippyshare', 'BypasserController.zippyshare')
 
 }).prefix('api/bypass');
