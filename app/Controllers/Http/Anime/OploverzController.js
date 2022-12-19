@@ -166,7 +166,7 @@ class OploverzController {
         released_on: '',
         updated_on: '',
         episode: '',
-        download: {}
+        download: []
       }
       //get detail
       let getDetail = $(".info-content > .spe")
@@ -228,55 +228,39 @@ class OploverzController {
 
       //end get detail
       list.each(function (v, i) {
+        const format = $(this).find("h3").text();
 
-        const format = $(this).find('h3').text()
+        const list = $(this).find(".soraurlx");
 
-        const list = $(this).find('.soraurlx')
-
-        // index[format] = {}
-        index['download'][format] = {}
-
-
-
+        const formatData = {
+          format,
+          resolutions: [],
+        };
 
         list.each(function (v, i) {
-          let res = $(this).find('strong').text()
-          // index[format][res] = {}
-          index['download'][format][res] = {}
+          let resolutions = $(this).find("strong").text();
 
-          const server = $(this).find('a')
+          const resolutionData = {
+            name: resolutions,
+            servers: [],
+          };
+
+          const server = $(this).find("a");
 
           server.each(function (v, e) {
-            const server = $(this).text()
-            const link = $(this).attr('href')
-            if (server === 'Google Drive (Acefile)') {
-              //console.log('acefile')
-              index['download'][format][res]['acefile'] = link
+            const server = $(this).text();
+            const link = $(this).attr("href");
+            const serverData = {
+              name: server,
+              link,
+            };
 
-            } else if (server === 'Zippyshare') {
-              //console.log('zippy')
-              index['download'][format][res]['zippy'] = link
-            } else if (server === 'One Drive') {
-              //console.log('one_drive')
-              index['download'][format][res]['one_drive'] = link
-            } else if (server === 'Linkbox') {
-              //console.log('linkbox')
-              index['download'][format][res]['linkbox'] = link
-            } else {
-
-              //index[format][res][server] = link
-              index['download'][format][res][server] = link
-            }
-
-          })
-        })
-
-
-
-
-
-
-      })
+            resolutionData.servers.push(serverData);
+          });
+          formatData.resolutions.push(resolutionData);
+        });
+        index.download.push(formatData);
+      });
       return {
         message: 'success',
         results: index
