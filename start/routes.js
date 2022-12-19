@@ -80,6 +80,9 @@ Route.group(() => {
   Route.get('/search', 'Anime/OploverzController.search')
   Route.get('/detail', 'Anime/OploverzController.detail')
   Route.get('/download', 'Anime/OploverzController.download')
+  Route.get('/latest', 'Anime/OploverzController.latest')
+  Route.get('/latest_update', 'Anime/OploverzController.latest_update')
+  Route.get('/popular', 'Anime/OploverzController.popular_today')
 
 
 }).prefix('api/anime/oploverz');

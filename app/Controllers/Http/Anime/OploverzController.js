@@ -287,10 +287,132 @@ class OploverzController {
     // console.log(JSON.stringify(result, null, 1))
 
     return result
-
-
-
   }
+
+  async latest({
+    request, response
+  }) {
+    const config = {
+        headers: {
+          'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
+          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Accept-Encoding': 'application/json'
+        }
+      }
+
+      let result = await axios.get(host+'anime/?status=&type=&order=update#', config).then((res) => {
+        const html = res.data
+        const $ = cheerio.load(html)
+        let list = $("article")
+        let index = []
+        list.each(function() {
+          const title = $(this).find('h2').text()
+          const status = $(this).find('.bt > .epx').text()
+          const type = $(this).find('.typez').text()
+          const poster = $(this).find('img').attr('src')
+          const link = $(this).find('a').attr('href')
+          const id = $(this).find('a').attr('href').match(/(?<=anime\/)(.*)/g)[0].replace('/', '')
+          index.push({title, id, status, type, poster, link})
+        })
+
+        return ({message: 'success', length: index.length, results: index })
+      })
+    //   console.log(result)
+      return result
+  }
+
+  async latest_update({
+    request, response
+  }) {
+    const config = {
+        headers: {
+          'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
+          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Accept-Encoding': 'application/json'
+        }
+      }
+
+      let result = await axios.get(host, config).then((res) => {
+        const html = res.data
+        const $ = cheerio.load(html)
+        let list = $("div:nth-child(6) > div.listupd.normal")
+        let index = []
+        list.find('article').each(function() {
+  const title = $(this).find('h2').text()
+  const episode = $(this).find('.bt > .epx').text().match(/\d+/g)[0]
+  const type = $(this).find('.typez').text()
+  const score = $(this).find('.scr').text()
+  const poster = $(this).find('img').attr('src')
+  const link = $(this).find('h2 > a').attr('href')
+  const id =link.match(/(http[s]?:\/\/)?([^\/\s]+\/)(.*)/)[3].replaceAll('/','')
+  const detail = $(this).find('li')
+
+  let status = ''
+  let posted_by = ''
+  let released_on = ''
+  let series = ''
+
+  detail.each(function() {
+      const detail = $(this)
+      if (detail.text().split(':')[0] == 'Status') {
+          // console.log('status')
+          status = detail.text().split(':')[1]
+      } else if (detail.text().split(':')[0] == 'Posted by') {
+          // console.log('posted_by')
+          posted_by = detail.text().split(':')[1]
+      } else if (detail.text().split(':')[0] == 'Released on') {
+          // console.log('released_on')
+          released_on = detail.text().split(':')[1]
+      } else if (detail.text().split(':')[0] == 'series') {
+          // console.log('series')
+          series = detail.text().split(':')[1]
+      } else {
+          // console.log('lain')
+      }
+  })
+  index.push({title, id, episode, type, score, poster, link, status, posted_by, released_on, series})
+        })
+        return ({message: 'success', length: index.length, results: index})
+  // console.log(index)
+      })
+  // console.log(result)
+  return result
+    }
+
+    async popular_today({
+        request, response
+      }) {
+        const config = {
+            headers: {
+              'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
+              'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+              'Accept-Encoding': 'application/json'
+            }
+          }
+
+          let result = await axios.get(host, config).then((res) => {
+            const html = res.data
+            const $ = cheerio.load(html)
+            let list = $("#content > div > div.postbody > div:nth-child(3) > div.listupd.normal > div > article")
+          //   console.log(list.html())
+            let index = []
+            list.each(function () {
+              const title = $(this).find('.eggtitle').text()
+              const type = $(this).find('.eggtype').text()
+              const episode = $(this).find('.eggepisode').text().match(/\d+/g)[0]
+              const poster = $(this).find('img').attr('src')
+              const link = $(this).find('a').attr('href')
+              const id = link.match(/(http[s]?:\/\/)?([^\/\s]+\/)(.*)/)[3].replaceAll('/','')
+
+              index.push({title, id, type, episode, poster, link})
+            })
+
+            return ({message:'success', length: index.length, results:index})
+
+          })
+
+return result
+        }
 }
 
 module.exports = OploverzController
