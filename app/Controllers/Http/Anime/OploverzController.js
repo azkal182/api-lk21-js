@@ -1,215 +1,249 @@
-'use strict'
-const Logger = use('Logger')
-const axios = require('axios');
-const cheerio = require('cheerio');
-const Env = use('Env')
+"use strict";
+const Logger = use("Logger");
+const axios = require("axios");
+const cheerio = require("cheerio");
+const Env = use("Env");
 
-
-
-const host = Env.get("HOST_OPLOVERZ", "https://15.235.11.45/")
+const host = Env.get("HOST_OPLOVERZ", "https://15.235.11.45/");
 
 class OploverzController {
-  async search({
-    request, response
-  }) {
-    let query = request.input('q')
+  async search({ request, response }) {
+    let query = request.input("q");
     const config = {
       params: {
-        s: query
+        s: query,
       },
       headers: {
-        'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
-        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Accept-Encoding': 'application/json'
-      }
-    }
+        "user-agent":
+          "Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Accept-Encoding": "application/json",
+      },
+    };
 
     let result = await axios.get(host, config).then((res) => {
-      const html = res.data
-      const $ = cheerio.load(html)
-      let list = $("article")
-      let index = []
+      const html = res.data;
+      const $ = cheerio.load(html);
+      let list = $("article");
+      let index = [];
       // console.log(list.html())
       list.each(function (v, i) {
-        const title = $(this).find('h2').text()
-        const id = $(this).find('a').attr('href').match(/(?<=anime\/)(.*)/g)[0].replace('/', '')
-        const link = $(this).find('a').attr('href')
-        const type = $(this).find('.typez').text()
-        const img = $(this).find('img').attr('src')
+        const title = $(this).find("h2").text();
+        const id = $(this)
+          .find("a")
+          .attr("href")
+          .match(/(?<=anime\/)(.*)/g)[0]
+          .replace("/", "");
+        const link = $(this).find("a").attr("href");
+        const type = $(this).find(".typez").text();
+        const img = $(this).find("img").attr("src");
         index.push({
-          title, id, link, type, img
-        })
-      })
-      return index
-    })
+          title,
+          id,
+          link,
+          type,
+          img,
+        });
+      });
+      return index;
+    });
     // console.log(result)
-    return result
+    return result;
   }
 
-  async detail({
-    request, response
-  }) {
-    let id = request.input('id')
+  async detail({ request, response }) {
+    let id = request.input("id");
     const config = {
       headers: {
-        'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
-        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Accept-Encoding': 'application/json'
-      }
-    }
+        "user-agent":
+          "Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Accept-Encoding": "application/json",
+      },
+    };
 
     let result = await axios.get(`${host}anime/${id}`, config).then((res) => {
-      const html = res.data
-      const $ = cheerio.load(html)
-      let list = $(".eplister > ul > li")
+      const html = res.data;
+      const $ = cheerio.load(html);
+      let list = $(".eplister > ul > li");
       let index = {
-        status: '',
-        studio: '',
-        released: '',
-        duration: '',
-        season: '',
-        type: '',
-        posted_by: '',
-        released_on: '',
-        updated_on: '',
-        list_episode: []
-      }
+        status: "",
+        studio: "",
+        released: "",
+        duration: "",
+        season: "",
+        type: "",
+        posted_by: "",
+        released_on: "",
+        updated_on: "",
+        list_episode: [],
+      };
 
-
-      let getDetail = $(".info-content > .spe")
-      $(".info-content > .spe > span").each(function() {
+      let getDetail = $(".info-content > .spe");
+      $(".info-content > .spe > span").each(function () {
         // console.log($(this).text().split(':')[0])
-        if ($(this).text().split(':')[0] == 'Status') {
+        if ($(this).text().split(":")[0] == "Status") {
           //console.log('status')
-          index.status = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Type') {
+          index.status = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Type") {
           //console.log('type')
-          index.type = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Posted by') {
+          index.type = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Posted by") {
           //console.log('posted_by')
-          index.posted_by = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Released on') {
+          index.posted_by = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Released on") {
           //console.log('released_on')
-          index.released_on = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Updated on') {
+          index.released_on = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Updated on") {
           //console.log('updated_on')
-          index.updated_on = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Studio') {
+          index.updated_on = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Studio") {
           //console.log('studio')
-          index.studio = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Released') {
+          index.studio = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Released") {
           //console.log('released')
-          index.released = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Duration') {
+          index.released = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Duration") {
           //console.log('duration')
-          index.duration = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Season') {
+          index.duration = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Season") {
           // console.log('season')
-          index.season = $(this).text().split(':')[1]
+          index.season = $(this).text().split(":")[1];
         } else {
-          console.log('other')
+          console.log("other");
         }
-      })
+      });
 
       //console.log(list.html())
       list.each(function (v, e) {
-        const episode = $(this).find('.epl-num').text()
-        const id = $(this).find('a').attr('href').match(/^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)([\/]{0,1}[^?#]*)(\?[^#]*|)(#.*|)$/)[5].replaceAll('/', '')
-        const title = $(this).find('.epl-title').text()
-        const uploaded = $(this).find('.epl-date').text()
+        const episode = $(this).find(".epl-num").text();
+        const id = $(this)
+          .find("a")
+          .attr("href")
+          .match(
+            /^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)([\/]{0,1}[^?#]*)(\?[^#]*|)(#.*|)$/
+          )[5]
+          .replaceAll("/", "");
+        const title = $(this).find(".epl-title").text();
+        const uploaded = $(this).find(".epl-date").text();
 
         index.list_episode.push({
           episode,
           title,
           id,
-          uploaded
-        })
-
-      })
-
+          uploaded,
+        });
+      });
 
       return {
-        message: 'success',
-        results: index
-      }
-    })
+        message: "success",
+        results: index,
+      };
+    });
     //console.log(result)
-    return result
+    return result;
   }
 
-
-  async download({
-    request, response
-  }) {
-    let eps = request.input('id')
+  async download({ request, response }) {
+    let eps = request.input("id");
     const config = {
       headers: {
-        'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
-        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Accept-Encoding': 'application/json'
-      }
-    }
+        "user-agent":
+          "Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Accept-Encoding": "application/json",
+      },
+    };
 
-    let result = await axios.get(host+eps, config).then((res) => {
-      const html = res.data
-      const $ = cheerio.load(html)
-      let list = $(".soraddlx.soradlg")
+    let result = await axios.get(host + eps, config).then((res) => {
+      const html = res.data;
+      const $ = cheerio.load(html);
+      let list = $(".soraddlx.soradlg");
       //console.log(list.html())
       let index = {
-        status: '',
-        studio: '',
-        released: '',
-        duration: '',
-        season: '',
-        type: '',
-        posted_by: '',
-        released_on: '',
-        updated_on: '',
-        episode: '',
-        download: []
-      }
+        status: "",
+        studio: "",
+        released: "",
+        duration: "",
+        season: "",
+        type: "",
+        posted_by: "",
+        released_on: "",
+        updated_on: "",
+        episode: "",
+        download: [],
+        embed : []
+      };
       //get detail
-      let getDetail = $(".info-content > .spe")
+      let getDetail = $(".info-content > .spe");
 
-      $(".info-content > .spe > span").each(function() {
-        // console.log($(this).text().split(':')[0])
-        if ($(this).text().split(':')[0] == 'Status') {
-          //console.log('status')
-          index.status = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Type') {
-          //console.log('type')
-          index.type = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Posted by') {
-          //console.log('posted_by')
-          index.posted_by = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Released on') {
-          //console.log('released_on')
-          index.released_on = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Updated on') {
-          //console.log('updated_on')
-          index.updated_on = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Studio') {
-          //console.log('studio')
-          index.studio = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Released') {
-          //console.log('released')
-          index.released = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Duration') {
-          //console.log('duration')
-          index.duration = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Season') {
-          // console.log('season')
-          index.season = $(this).text().split(':')[1]
-        } else if ($(this).text().split(':')[0] == 'Episodes') {
-          // console.log('season')
-          index.episode = $(this).text().split(':')[1]
-        } else {
-          console.log('other')
-          console.log($(this).text().split(':')[0])
+      const get_embed = $(
+        "div.entry-content > div:nth-child(3) > div.mctnx > div:nth-child(1) > .soraurlx"
+      );
+
+      get_embed.each(function () {
+        const item = $(this);
+        if (item.text() == "Google Drive (Acefile)") {
+          //console.log(item.text());
         }
-      })
 
+        item.each(function () {
+          const get_google = $(this).find("a");
+          const res_embed = $(this).find("strong").text();
 
+          //console.log(res_embed);
+          //embed.push({ res: res_embed });
+          get_google.each(function () {
+            if ($(this).text() === "Google Drive (Acefile)") {
+              //console.log($(this).text());
+              index.embed.push({
+                resolution: res_embed,
+                server: $(this).text(),
+                link: $(this).attr("href"),
+                id: $(this).attr("href").match(/(\d+)/)[1],
+              });
+            }
+          });
+        });
+      });
+
+      $(".info-content > .spe > span").each(function () {
+        // console.log($(this).text().split(':')[0])
+        if ($(this).text().split(":")[0] == "Status") {
+          //console.log('status')
+          index.status = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Type") {
+          //console.log('type')
+          index.type = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Posted by") {
+          //console.log('posted_by')
+          index.posted_by = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Released on") {
+          //console.log('released_on')
+          index.released_on = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Updated on") {
+          //console.log('updated_on')
+          index.updated_on = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Studio") {
+          //console.log('studio')
+          index.studio = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Released") {
+          //console.log('released')
+          index.released = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Duration") {
+          //console.log('duration')
+          index.duration = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Season") {
+          // console.log('season')
+          index.season = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Episodes") {
+          // console.log('season')
+          index.episode = $(this).text().split(":")[1];
+        } else {
+          console.log("other");
+          console.log($(this).text().split(":")[0]);
+        }
+      });
 
       /*
       const status = getDetail.find('span:nth-child(1) ').html().match(/(?<=\/b\>)(.*)/)[1].trim()
@@ -262,141 +296,161 @@ class OploverzController {
         index.download.push(formatData);
       });
       return {
-        message: 'success',
-        results: index
-      }
+        message: "success",
+        results: index,
+      };
 
       //console.log(JSON.stringify(index))
-    })
+    });
     // console.log(JSON.stringify(result, null, 1))
 
-    return result
+    return result;
   }
 
-  async latest({
-    request, response
-  }) {
+  async latest({ request, response }) {
     const config = {
-        headers: {
-          'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
-          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Accept-Encoding': 'application/json'
-        }
-      }
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Accept-Encoding": "application/json",
+      },
+    };
 
-      let result = await axios.get(host+'anime/?status=&type=&order=update#', config).then((res) => {
-        const html = res.data
-        const $ = cheerio.load(html)
-        let list = $("article")
-        let index = []
-        list.each(function() {
-          const title = $(this).find('h2').text()
-          const status = $(this).find('.bt > .epx').text()
-          const type = $(this).find('.typez').text()
-          const poster = $(this).find('img').attr('src')
-          const link = $(this).find('a').attr('href')
-          const id = $(this).find('a').attr('href').match(/(?<=anime\/)(.*)/g)[0].replace('/', '')
-          index.push({title, id, status, type, poster, link})
-        })
+    let result = await axios
+      .get(host + "anime/?status=&type=&order=update#", config)
+      .then((res) => {
+        const html = res.data;
+        const $ = cheerio.load(html);
+        let list = $("article");
+        let index = [];
+        list.each(function () {
+          const title = $(this).find("h2").text();
+          const status = $(this).find(".bt > .epx").text();
+          const type = $(this).find(".typez").text();
+          const poster = $(this).find("img").attr("src");
+          const link = $(this).find("a").attr("href");
+          const id = $(this)
+            .find("a")
+            .attr("href")
+            .match(/(?<=anime\/)(.*)/g)[0]
+            .replace("/", "");
+          index.push({ title, id, status, type, poster, link });
+        });
 
-        return ({message: 'success', length: index.length, results: index })
-      })
+        return { message: "success", length: index.length, results: index };
+      });
     //   console.log(result)
-      return result
+    return result;
   }
 
-  async latest_update({
-    request, response
-  }) {
+  async latest_update({ request, response }) {
     const config = {
-        headers: {
-          'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
-          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'Accept-Encoding': 'application/json'
-        }
-      }
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Accept-Encoding": "application/json",
+      },
+    };
 
-      let result = await axios.get(host, config).then((res) => {
-        const html = res.data
-        const $ = cheerio.load(html)
-        let list = $("div:nth-child(6) > div.listupd.normal")
-        let index = []
-        list.find('article').each(function() {
-  const title = $(this).find('h2').text()
-  const episode = $(this).find('.bt > .epx').text().match(/\d+/g)[0]
-  const type = $(this).find('.typez').text()
-  const score = $(this).find('.scr').text()
-  const poster = $(this).find('img').attr('src')
-  const link = $(this).find('h2 > a').attr('href')
-  const id =link.match(/(http[s]?:\/\/)?([^\/\s]+\/)(.*)/)[3].replaceAll('/','')
-  const detail = $(this).find('li')
+    let result = await axios.get(host, config).then((res) => {
+      const html = res.data;
+      const $ = cheerio.load(html);
+      let list = $("div:nth-child(6) > div.listupd.normal");
+      let index = [];
+      list.find("article").each(function () {
+        const title = $(this).find("h2").text();
+        const episode = $(this).find(".bt > .epx").text().match(/\d+/g)[0];
+        const type = $(this).find(".typez").text();
+        const score = $(this).find(".scr").text();
+        const poster = $(this).find("img").attr("src");
+        const link = $(this).find("h2 > a").attr("href");
+        const id = link
+          .match(/(http[s]?:\/\/)?([^\/\s]+\/)(.*)/)[3]
+          .replaceAll("/", "");
+        const detail = $(this).find("li");
 
-  let status = ''
-  let posted_by = ''
-  let released_on = ''
-  let series = ''
+        let status = "";
+        let posted_by = "";
+        let released_on = "";
+        let series = "";
 
-  detail.each(function() {
-      const detail = $(this)
-      if (detail.text().split(':')[0] == 'Status') {
-          // console.log('status')
-          status = detail.text().split(':')[1]
-      } else if (detail.text().split(':')[0] == 'Posted by') {
-          // console.log('posted_by')
-          posted_by = detail.text().split(':')[1]
-      } else if (detail.text().split(':')[0] == 'Released on') {
-          // console.log('released_on')
-          released_on = detail.text().split(':')[1]
-      } else if (detail.text().split(':')[0] == 'series') {
-          // console.log('series')
-          series = detail.text().split(':')[1]
-      } else {
-          // console.log('lain')
-      }
-  })
-  index.push({title, id, episode, type, score, poster, link, status, posted_by, released_on, series})
-        })
-        return ({message: 'success', length: index.length, results: index})
-  // console.log(index)
-      })
-  // console.log(result)
-  return result
-    }
-
-    async popular_today({
-        request, response
-      }) {
-        const config = {
-            headers: {
-              'user-agent': 'Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36',
-              'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-              'Accept-Encoding': 'application/json'
-            }
+        detail.each(function () {
+          const detail = $(this);
+          if (detail.text().split(":")[0] == "Status") {
+            // console.log('status')
+            status = detail.text().split(":")[1];
+          } else if (detail.text().split(":")[0] == "Posted by") {
+            // console.log('posted_by')
+            posted_by = detail.text().split(":")[1];
+          } else if (detail.text().split(":")[0] == "Released on") {
+            // console.log('released_on')
+            released_on = detail.text().split(":")[1];
+          } else if (detail.text().split(":")[0] == "series") {
+            // console.log('series')
+            series = detail.text().split(":")[1];
+          } else {
+            // console.log('lain')
           }
+        });
+        index.push({
+          title,
+          id,
+          episode,
+          type,
+          score,
+          poster,
+          link,
+          status,
+          posted_by,
+          released_on,
+          series,
+        });
+      });
+      return { message: "success", length: index.length, results: index };
+      // console.log(index)
+    });
+    // console.log(result)
+    return result;
+  }
 
-          let result = await axios.get(host, config).then((res) => {
-            const html = res.data
-            const $ = cheerio.load(html)
-            let list = $("#content > div > div.postbody > div:nth-child(3) > div.listupd.normal > div > article")
-          //   console.log(list.html())
-            let index = []
-            list.each(function () {
-              const title = $(this).find('.eggtitle').text()
-              const type = $(this).find('.eggtype').text()
-              const episode = $(this).find('.eggepisode').text().match(/\d+/g)[0]
-              const poster = $(this).find('img').attr('src')
-              const link = $(this).find('a').attr('href')
-              const id = link.match(/(http[s]?:\/\/)?([^\/\s]+\/)(.*)/)[3].replaceAll('/','')
+  async popular_today({ request, response }) {
+    const config = {
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Accept-Encoding": "application/json",
+      },
+    };
 
-              index.push({title, id, type, episode, poster, link})
-            })
+    let result = await axios.get(host, config).then((res) => {
+      const html = res.data;
+      const $ = cheerio.load(html);
+      let list = $(
+        "#content > div > div.postbody > div:nth-child(3) > div.listupd.normal > div > article"
+      );
+      //   console.log(list.html())
+      let index = [];
+      list.each(function () {
+        const title = $(this).find(".eggtitle").text();
+        const type = $(this).find(".eggtype").text();
+        const episode = $(this).find(".eggepisode").text().match(/\d+/g)[0];
+        const poster = $(this).find("img").attr("src");
+        const link = $(this).find("a").attr("href");
+        const id = link
+          .match(/(http[s]?:\/\/)?([^\/\s]+\/)(.*)/)[3]
+          .replaceAll("/", "");
 
-            return ({message:'success', length: index.length, results:index})
+        index.push({ title, id, type, episode, poster, link });
+      });
 
-          })
+      return { message: "success", length: index.length, results: index };
+    });
 
-return result
-        }
+    return result;
+  }
 }
 
-module.exports = OploverzController
+module.exports = OploverzController;
