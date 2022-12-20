@@ -171,11 +171,49 @@ class OploverzController {
         released_on: "",
         updated_on: "",
         episode: "",
+        anime_id:"",
+        prev: "",
+        next: "",
         download: [],
-        embed : []
+        embed: [],
       };
       //get detail
       let getDetail = $(".info-content > .spe");
+
+      const prev = $(
+        "div.megavid > div > div.naveps.bignav > div:nth-child(1) > a"
+      ).attr("href");
+
+      const anime_id = $(
+        "div.megavid > div > div.naveps.bignav > div:nth-child(2) > a"
+      )
+        .attr("href")
+        .match(/(?<=anime\/)(.*)/g)[0]
+        .replaceAll("/", "");
+        index.anime_id = anime_id
+      //console.log(id_anime);
+
+      const next = $(
+        "div.megavid > div > div.naveps.bignav > div:nth-child(3) >a"
+      ).attr("href");
+      if (prev) {
+        const final_prev = prev
+          .match(
+            /^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)([\/]{0,1}[^?#]*)(\?[^#]*|)(#.*|)$/
+          )[5]
+          .replaceAll("/", "");
+        //  index.next.push(final_prev);
+        index.prev = final_prev;
+      }
+
+      if (next) {
+        const final_next = next
+          .match(
+            /^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)([\/]{0,1}[^?#]*)(\?[^#]*|)(#.*|)$/
+          )[5]
+          .replaceAll("/", "");
+        index.next = final_next;
+      }
 
       const get_embed = $(
         "div.entry-content > div:nth-child(3) > div.mctnx > div:nth-child(1) > .soraurlx"
