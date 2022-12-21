@@ -4,7 +4,7 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const Env = use("Env");
 
-const host = Env.get("HOST_OPLOVERZ", "https://15.235.11.45/");
+const host = Env.get("HOST_OPLOVERZ", "https://oploverz.co.in/");
 
 class OploverzController {
   async search({ request, response }) {
@@ -67,19 +67,32 @@ class OploverzController {
       const $ = cheerio.load(html);
       let list = $(".eplister > ul > li");
       let index = {
+        title: "",
+        poster: "",
         status: "",
         studio: "",
         released: "",
         duration: "",
         season: "",
+        episodes: "",
         type: "",
         posted_by: "",
         released_on: "",
         updated_on: "",
+        description: "",
         list_episode: [],
       };
 
+
+const poster = $(".thumbook > .thumb > img").attr("src");
+      index.poster = poster;
+      
+      const title = $("h1[itemprop=name]").text();
+
+      index.title = title;
       let getDetail = $(".info-content > .spe");
+      const desc = $("[itemprop=description]").text().trim();
+      index.description = desc;
       $(".info-content > .spe > span").each(function () {
         // console.log($(this).text().split(':')[0])
         if ($(this).text().split(":")[0] == "Status") {
@@ -109,6 +122,9 @@ class OploverzController {
         } else if ($(this).text().split(":")[0] == "Season") {
           // console.log('season')
           index.season = $(this).text().split(":")[1];
+        } else if ($(this).text().split(":")[0] == "Episodes") {
+          // console.log('season')
+          index.episodes = $(this).text().split(":")[1];
         } else {
           console.log("other");
         }
@@ -171,7 +187,7 @@ class OploverzController {
         released_on: "",
         updated_on: "",
         episode: "",
-        anime_id:"",
+        anime_id: "",
         prev: "",
         next: "",
         download: [],
@@ -190,7 +206,7 @@ class OploverzController {
         .attr("href")
         .match(/(?<=anime\/)(.*)/g)[0]
         .replaceAll("/", "");
-        index.anime_id = anime_id
+      index.anime_id = anime_id;
       //console.log(id_anime);
 
       const next = $(
