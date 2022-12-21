@@ -45,7 +45,7 @@ class OploverzController {
           img,
         });
       });
-      return index;
+      return ({message: 'success', length: index.length, results: index});
     });
     // console.log(result)
     return result;
