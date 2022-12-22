@@ -93,3 +93,12 @@ Route.group(() => {
   Route.get('/zippyshare', 'BypasserController.zippyshare')
 
 }).prefix('api/bypass');
+
+Route.get('/get_id', async ({request, response}) => {
+  let query = request.input('id')
+let result = await axios(`https://acefile.co/service/mirror_download/${query}`).then((res) => {
+  const id = atob(res.data.AceFile[0].code)
+  return id
+})
+return result
+})
