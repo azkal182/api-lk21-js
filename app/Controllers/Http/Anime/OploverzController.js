@@ -490,14 +490,14 @@ const poster = $(".thumbook > .thumb > img").attr("src");
       list.each(function () {
         const title = $(this).find(".eggtitle").text();
         const type = $(this).find(".eggtype").text();
-        const episode = $(this).find(".eggepisode").text().match(/\d+/g)[0];
+        const episode = $(this).find(".eggepisode").text() ? $(this).find(".eggepisode").text().match(/\d+/g)[0] : '';
         const poster = $(this).find("img").attr("src");
         const link = $(this).find("a").attr("href");
         const id = link
           .match(/(http[s]?:\/\/)?([^\/\s]+\/)(.*)/)[3]
           .replaceAll("/", "");
 
-        index.push({ title, id, type, episode, poster, link });
+        index.push({ title, id, type, episode,poster, link });
       });
 
       return { message: "success", length: index.length, results: index };
