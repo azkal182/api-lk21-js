@@ -375,20 +375,18 @@ class Lk21Controller {
                 return {
                     message: 'success',
                     length: index.length,
-                    results: {
-                        data: index
-                    }
+                    results: index
                 }
             })
 
         if (tmdb) {
             for (let i = 0; i < result.length; i++) {
                 //console.log(result.results.data[i].id.replaceAll('-', ' ').replace(/[0-9]*$/gm, '').trim())
-                const forId = result.results.data[i].id.replaceAll('-', ' ').replace(/[0-9]*$/gm, '').trim()
+                const forId = result.results[i].id.replaceAll('-', ' ').replace(/[0-9]*$/gm, '').trim()
 
                 let oke = await axios.get('https://api.themoviedb.org:443/3/search/movie?api_key=243bd781b4261e4fade9058a64105c28&query=' + forId)
                 //console.log(oke.data.results[0])
-                result.results.data[i]['TMDB'] = oke.data.results[0]
+                result.results[i]['TMDB'] = oke.data.results[0]
             }
         }
 
@@ -445,9 +443,7 @@ class Lk21Controller {
                 return {
                     message: 'success',
                     length: index.length,
-                    results: {
-                        data: index
-                    }
+                    results: index
                 }
             })
 
@@ -455,11 +451,11 @@ class Lk21Controller {
 
             for (let i = 0; i < result.length; i++) {
                 // console.log(result.results.data[i].id.replaceAll('-', ' ').replace(/[0-9]*$/gm, '').trim())
-                const forId = result.results.data[i].id.replaceAll('-', ' ').replace(/[0-9]*$/gm, '').trim()
+                const forId = result.results[i].id.replaceAll('-', ' ').replace(/[0-9]*$/gm, '').trim()
 
                 let oke = await axios.get('https://api.themoviedb.org:443/3/search/movie?api_key=243bd781b4261e4fade9058a64105c28&query=' + forId)
                 //console.log(oke.data.results[0])
-                result.results.data[i]['TMDB'] = oke.data.results[0]
+                result.results[i]['TMDB'] = oke.data.results[0]
             }
         }
 
