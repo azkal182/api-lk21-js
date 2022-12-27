@@ -88,14 +88,14 @@ class Lk21Controller {
 
       list.each(function (v, i) {
         let title = $(this).find('figure > a').attr('title')
-        let img = "https:" + $(this).find('figure > a > img').attr('src')
+        let poster = "https:" + $(this).find('figure > a > img').attr('src')
         let id = getId($(this).find("figure > a").attr("href"))
         let link = $(this).find(".search-content > h2 > a").attr('href');
         let tag = $(this).find('p.cat-links > a:nth-child(1)').attr('href')
         if (!tag.match(/series/gm)) {
           index.push({
             title,
-            img,
+            poster,
             id,
             link
           })
