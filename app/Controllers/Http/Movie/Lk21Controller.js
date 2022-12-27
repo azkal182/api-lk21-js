@@ -114,9 +114,7 @@ class Lk21Controller {
       return {
         message: 'success',
         length: index.length,
-        results: {
-          ...index
-        }
+        results: index
       }
     })
 
