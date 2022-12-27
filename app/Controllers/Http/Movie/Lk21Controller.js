@@ -96,19 +96,10 @@ class Lk21Controller {
           index.push({
             title,
             img,
-            id: id,
+            id,
             link
           })
         }
-        /*
-        index.push({
-          title,
-          img,
-          id: id,
-          link
-
-        })
-        */
 
       })
       return {
@@ -118,21 +109,17 @@ class Lk21Controller {
       }
     })
 
-    //get data themlviebd
+    // get data themlviebd
     for (let i = 0; i < result.length; i++) {
      // console.log(result.results.data[i].id.replaceAll('-', ' ').replace(/[0-9]*$/gm, '').trim())
-      const forId = result.results.data[i].id.replaceAll('-', ' ').replace(/[0-9]*$/gm, '').trim()
-
+      const forId = result.results[i].id.replaceAll('-', ' ').replace(/[0-9]*$/gm, '').trim()
+    // console.log(forId)
       let oke = await axios.get('https://api.themoviedb.org:443/3/search/movie?api_key=243bd781b4261e4fade9058a64105c28&query=' + forId)
-     // console.log(oke.data.results[0])
-      result.results.data[i]['TMDB'] = oke.data.results[0]
+    //  console.log(oke.data.results)
+      result.results[i]['TMDB'] = oke.data.results[0]
     }
 
-
-
-
-
-    //console.log(result)
+    // console.log(result)
     return result
   }
 
