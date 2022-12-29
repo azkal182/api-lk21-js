@@ -5,7 +5,7 @@ const cheerio = require("cheerio");
 const Env = use("Env");
 
 const host = Env.get("HOST_OPLOVERZ", "https://oploverz.co.in/");
-
+let cache = {};
 class OploverzController {
  async searchOld({ request, response }) {
   let query = request.input("q");
@@ -408,7 +408,7 @@ class OploverzController {
   return result;
  }
 
- async latest({ request, response }) {
+ async latestOld({ request, response }) {
   const config = {
    headers: {
     "user-agent":
@@ -444,6 +444,54 @@ class OploverzController {
   //   console.log(result)
   return result;
  }
+ 
+ async latest({ request, response }) {
+ const userAgent = "Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36";
+  const contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+  const acceptEncoding = "application/json";
+  const config = {
+    headers: {
+      "user-agent": userAgent,
+      "content-type": contentType,
+      "Accept-Encoding": acceptEncoding,
+    },
+  };
+  const url = `${host}anime/?status=&type=&order=update#`;
+
+  // Cek apakah data sudah ada di cache
+  if (cache[url] && cache[url].expiry > Date.now()) {
+    console.log(`Mengambil data dari cache untuk URL: ${url}`);
+    return cache[url].data;
+  }
+
+  console.log(`Mengambil data dari server untuk URL: ${url}`);
+  const { data: html } = await axios.get(url, config);
+  const $ = cheerio.load(html);
+  const list = $("article");
+  const results = [];
+  list.each((i, el) => {
+    const title = $(el).find("h2").text();
+    const status = $(el).find(".bt > .epx").text();
+    const type = $(el).find(".typez").text();
+    const poster = $(el).find("img").attr("src");
+    const link = $(el).find("a").attr("href");
+    const id = $(el)
+      .find("a")
+      .attr("href")
+      .match(/(?<=anime\/)(.*)/g)[0]
+      .replace("/", "");
+    results.push({ title, id, status, type, poster, link });
+  });
+
+  // Simpan data ke cache
+  cache[url] = {
+    data: { message: "success", length: results.length, results },
+    expiry: Date.now() + 3600 * 1000,
+  };
+//console.log(results)
+  return { message: "success", length: results.length, results };
+}
+
 
  async latest_update({ request, response }) {
   const config = {
@@ -515,6 +563,10 @@ class OploverzController {
   // console.log(result)
   return result;
  }
+ 
+ 
+ 
+ 
 
  async popular_today({ request, response }) {
   const config = {
