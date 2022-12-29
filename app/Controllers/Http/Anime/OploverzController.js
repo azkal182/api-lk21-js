@@ -3,6 +3,8 @@ const Logger = use("Logger");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const Env = use("Env");
+const NodeCache = require('node-cache')
+const nodeCache = new NodeCache()
 
 const host = Env.get("HOST_OPLOVERZ", "https://oploverz.co.in/");
 let cache = {};
@@ -101,6 +103,12 @@ class OploverzController {
  
  async detail({ request, response }) {
   let id = request.input("id");
+  const cacheDetail = nodeCache.has('detail' + id)
+  
+  if (cacheDetail) {
+   console.log('Mengambil data dari cache')
+   return nodeCache.get('detail' + id)
+  }
   const config = {
    headers: {
     "user-agent":
@@ -204,11 +212,18 @@ class OploverzController {
    };
   });
   //console.log(result)
+  nodeCache.set('detail' +id,result, 3600)
   return result;
  }
 
  async download({ request, response }) {
   let eps = request.input("id");
+  const cacheDownload = nodeCache.has(eps)
+  
+  if (cacheDownload) {
+   console.log('Mengambil data dari cache')
+   return nodeCache.get(eps)
+  }
   const config = {
    headers: {
     "user-agent":
@@ -404,6 +419,7 @@ class OploverzController {
    //console.log(JSON.stringify(index))
   });
   // console.log(JSON.stringify(result, null, 1))
+  nodeCache.set(eps,result, 3600)
 
   return result;
  }
@@ -569,6 +585,14 @@ class OploverzController {
  
 
  async popular_today({ request, response }) {
+  const cachePopularToday = nodeCache.has('PopularToday')
+  
+  if (cachePopularToday) {
+   console.log('Mengambil data dari cache')
+   return nodeCache.get('PopularToday')
+  }
+  
+console.log('Mengambil data dari server')
   const config = {
    headers: {
     "user-agent":
@@ -577,7 +601,6 @@ class OploverzController {
     "Accept-Encoding": "application/json",
    },
   };
-
   let result = await axios.get(host, config).then((res) => {
    const html = res.data;
    const $ = cheerio.load(html);
@@ -603,7 +626,7 @@ class OploverzController {
 
    return { message: "success", length: index.length, results: index };
   });
-
+  nodeCache.set('PopularToday',result, 3600)
   return result;
  }
 }
