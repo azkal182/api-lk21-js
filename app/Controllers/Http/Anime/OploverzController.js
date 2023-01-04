@@ -424,7 +424,7 @@ class OploverzController {
   return result;
  }
 
- async latestOld({ request, response }) {
+ async latest({ request, response }) {
   const config = {
    headers: {
     "user-agent":
@@ -461,7 +461,7 @@ class OploverzController {
   return result;
  }
  
- async latest({ request, response }) {
+ async latestCache({ request, response }) {
  const userAgent = "Mozilla/5.0 (Linux; Android 12; CPH2043) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36";
   const contentType = "application/x-www-form-urlencoded; charset=UTF-8";
   const acceptEncoding = "application/json";
