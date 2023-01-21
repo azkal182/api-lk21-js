@@ -55,7 +55,7 @@ class OploverzController {
 
  async search({ request, response }) {
   let query = request.input("q");
-  const res = await fetch(host + "wp-admin/admin-ajax.php", {
+  const res = await fetch(host + "wwp-admin/admin-ajax.php", {
    headers: {
     accept: "*/*",
     "accept-language":
@@ -69,7 +69,7 @@ class OploverzController {
     "sec-fetch-site": "same-origin",
     "x-requested-with": "XMLHttpRequest",
    },
-   referrer: "https://15.235.11.45/",
+   referrer: host,
    referrerPolicy: "strict-origin-when-cross-origin",
    body: "action=ts_ac_do_search&ts_ac_query=" + query,
    method: "POST",
@@ -78,6 +78,7 @@ class OploverzController {
   });
   if (!res.ok) {
    // This will activate the closest `error.js` Error Boundary
+console.log({status: res.status, host})
    throw new Error("Failed to fetch data");
   }
 
