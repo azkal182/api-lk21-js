@@ -55,7 +55,7 @@ class OploverzController {
 
  async search({ request, response }) {
   let query = request.input("q");
-  const res = await fetch("https://15.235.11.45/wp-admin/admin-ajax.php", {
+  const res = await fetch(host + "wp-admin/admin-ajax.php", {
    headers: {
     accept: "*/*",
     "accept-language":
